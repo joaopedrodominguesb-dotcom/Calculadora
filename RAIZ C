@@ -1,0 +1,110 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+#define MAX 100
+
+typedef struct {
+    float numero;
+    float raiz;
+} Calculo;
+
+// Função para ler número válido
+float lerNumero() {
+    float valor;
+    int ok;
+    do {
+        printf("Digite um numero: ");
+        ok = scanf("%f", &valor);
+        if (ok != 1) {
+            printf("❌ Entrada invalida! Digite um numero.\n");
+            while(getchar() != '\n'); // limpa buffer
+        }
+    } while(ok != 1);
+    return valor;
+}
+
+// Calcula raiz quadrada com verificação
+float calcularRaiz(float num) {
+    if(num < 0) {
+        printf("❌ Nao e possivel calcular raiz de numero negativo!\n");
+        return -1; // valor inválido
+    }
+    return sqrt(num);
+}
+
+// Mostra histórico de cálculos
+void mostrarHistorico(Calculo hist[], int n) {
+    if(n == 0) {
+        printf("Nenhum calculo realizado ainda.\n");
+        return;
+    }
+    printf("\n===== HISTORICO =====\n");
+    for(int i = 0; i < n; i++) {
+        printf("%d) Numero: %.2f | Raiz: %.2f\n", i+1, hist[i].numero, hist[i].raiz);
+    }
+}
+
+// Salva histórico em arquivo
+void salvarHistorico(Calculo hist[], int n) {
+    FILE *arq = fopen("historico_raizes.txt", "w");
+    if(!arq) {
+        printf("Erro ao abrir arquivo!\n");
+        return;
+    }
+    for(int i = 0; i < n; i++) {
+        fprintf(arq, "%.2f %.2f\n", hist[i].numero, hist[i].raiz);
+    }
+    fclose(arq);
+    printf("Historico salvo em 'historico_raizes.txt'\n");
+}
+
+// Programa principal
+int main() {
+    Calculo historico[MAX];
+    int qtd = 0;
+    int opcao;
+
+    do {
+        printf("\n===========================\n");
+        printf(" CALCULADORA DE RAIZES \n");
+        printf("===========================\n");
+        printf("1 - Calcular nova raiz\n");
+        printf("2 - Mostrar historico\n");
+        printf("3 - Salvar historico\n");
+        printf("0 - Sair\n");
+        printf("Opcao: ");
+        scanf("%d", &opcao);
+
+        switch(opcao) {
+            case 1:
+                if(qtd >= MAX) {
+                    printf("Limite de historico atingido!\n");
+                    break;
+                }
+                float num = lerNumero();
+                float r = calcularRaiz(num);
+                if(r != -1) { // só salva se válido
+                    historico[qtd].numero = num;
+                    historico[qtd].raiz = r;
+                    qtd++;
+                    printf("Raiz quadrada de %.2f = %.2f\n", num, r);
+                }
+                break;
+            case 2:
+                mostrarHistorico(historico, qtd);
+                break;
+            case 3:
+                salvarHistorico(historico, qtd);
+                break;
+            case 0:
+                printf("Saindo...\n");
+                break;
+            default:
+                printf("Opcao invalida!\n");
+        }
+
+    } while(opcao != 0);
+
+    return 0;
+}
