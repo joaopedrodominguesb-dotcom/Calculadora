@@ -1,0 +1,146 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+#define MAX 100
+
+// Struct para guardar um cálculo
+typedef struct
+{
+    float cateto1;
+    float cateto2;
+    float hipotenusa;
+} Calculo;
+
+// Função para calcular hipotenusa
+float calcularHipotenusa(float a, float b)
+{
+    return sqrt(a * a + b * b);
+}
+
+// Função para ler valor válido
+float lerValor(const char *msg)
+{
+    float valor;
+    int ok;
+
+    do
+    {
+        printf("%s", msg);
+        ok = scanf("%f", &valor);
+
+        if (ok != 1 || valor <= 0)
+        {
+            printf("Entrada invalida! Digite um numero positivo.\n");
+            while (getchar() != '\n');
+        }
+
+    } while (ok != 1 || valor <= 0);
+
+    return valor;
+}
+
+// Mostrar histórico
+void mostrarHistorico(Calculo hist[], int n)
+{
+    if (n == 0)
+    {
+        printf("\nNenhum calculo realizado ainda.\n");
+        return;
+    }
+
+    printf("\n===== HISTORICO =====\n");
+    for (int i = 0; i < n; i++)
+    {
+        printf("%d) Cat1: %.2f | Cat2: %.2f | Hip: %.2f\n",
+               i + 1,
+               hist[i].cateto1,
+               hist[i].cateto2,
+               hist[i].hipotenusa);
+    }
+}
+
+// Salvar em arquivo
+void salvarArquivo(Calculo hist[], int n)
+{
+    FILE *arq = fopen("historico.txt", "w");
+
+    if (arq == NULL)
+    {
+        printf("Erro ao abrir arquivo!\n");
+        return;
+    }
+
+    for (int i = 0; i < n; i++)
+    {
+        fprintf(arq, "%.2f %.2f %.2f\n",
+                hist[i].cateto1,
+                hist[i].cateto2,
+                hist[i].hipotenusa);
+    }
+
+    fclose(arq);
+    printf("Historico salvo em 'historico.txt'\n");
+}
+
+// Programa principal
+int main()
+{
+    Calculo historico[MAX];
+    int qtd = 0;
+    int opcao;
+
+    do
+    {
+        printf("\n===========================\n");
+        printf(" CALCULADORA UNIVERSITARIA \n");
+        printf("===========================\n");
+        printf("1 - Novo calculo\n");
+        printf("2 - Mostrar historico\n");
+        printf("3 - Salvar historico\n");
+        printf("0 - Sair\n");
+        printf("Opcao: ");
+        scanf("%d", &opcao);
+
+        switch (opcao)
+        {
+            case 1:
+                if (qtd >= MAX)
+                {
+                    printf("Limite de historico atingido!\n");
+                    break;
+                }
+
+                historico[qtd].cateto1 = lerValor("Cateto 1: ");
+                historico[qtd].cateto2 = lerValor("Cateto 2: ");
+
+                historico[qtd].hipotenusa =
+                    calcularHipotenusa(historico[qtd].cateto1,
+                                       historico[qtd].cateto2);
+
+                printf("Hipotenusa = %.2f\n",
+                       historico[qtd].hipotenusa);
+
+                qtd++;
+                break;
+
+            case 2:
+                mostrarHistorico(historico, qtd);
+                break;
+
+            case 3:
+                salvarArquivo(historico, qtd);
+                break;
+
+            case 0:
+                printf("Saindo...\n");
+                break;
+
+            default:
+                printf("Opcao invalida!\n");
+        }
+
+    } while (opcao != 0);
+
+    return 0;
+}
