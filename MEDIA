@@ -1,0 +1,130 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define MAX 100
+
+// funções
+float calcular_media(float v[], int n) {
+    float soma = 0;
+    for(int i = 0; i < n; i++) soma += v[i];
+    return soma / n;
+}
+
+float maior(float v[], int n) {
+    float m = v[0];
+    for(int i = 1; i < n; i++)
+        if(v[i] > m) m = v[i];
+    return m;
+}
+
+float menor(float v[], int n) {
+    float m = v[0];
+    for(int i = 1; i < n; i++)
+        if(v[i] < m) m = v[i];
+    return m;
+}
+
+void salvar_arquivo(float v[], int n) {
+    FILE *f = fopen("dados.txt", "w");
+    if(f == NULL) {
+        printf("Erro ao salvar arquivo!\n");
+        return;
+    }
+
+    for(int i = 0; i < n; i++) {
+        fprintf(f, "%.2f\n", v[i]);
+    }
+
+    fclose(f);
+    printf("Dados salvos em dados.txt\n");
+}
+
+int carregar_arquivo(float v[]) {
+    FILE *f = fopen("dados.txt", "r");
+    if(f == NULL) {
+        printf("Erro ao abrir arquivo!\n");
+        return 0;
+    }
+
+    int i = 0;
+    while(fscanf(f, "%f", &v[i]) != EOF && i < MAX) {
+        i++;
+    }
+
+    fclose(f);
+    printf("Dados carregados!\n");
+    return i;
+}
+
+void gerar_aleatorios(float v[], int n) {
+    for(int i = 0; i < n; i++) {
+        v[i] = rand() % 100; // 0 a 99
+    }
+    printf("Sensores gerados automaticamente!\n");
+}
+
+int main() {
+    float valores[MAX];
+    int n = 0;
+    int op;
+
+    srand(time(NULL));
+
+    do {
+        printf("\n==== MENU ====\n");
+        printf("1 - Inserir sensores manualmente\n");
+        printf("2 - Gerar sensores aleatorios\n");
+        printf("3 - Mostrar estatisticas\n");
+        printf("4 - Salvar em arquivo\n");
+        printf("5 - Carregar do arquivo\n");
+        printf("0 - Sair\n");
+        printf("Escolha: ");
+        scanf("%d", &op);
+
+        switch(op) {
+            case 1:
+                printf("Quantos sensores? ");
+                scanf("%d", &n);
+                for(int i = 0; i < n; i++) {
+                    printf("Sensor %d: ", i+1);
+                    scanf("%f", &valores[i]);
+                }
+                break;
+
+            case 2:
+                printf("Quantos sensores gerar? ");
+                scanf("%d", &n);
+                gerar_aleatorios(valores, n);
+                break;
+
+            case 3:
+                if(n == 0) {
+                    printf("Nenhum dado!\n");
+                } else {
+                    printf("Media: %.2f\n", calcular_media(valores, n));
+                    printf("Maior: %.2f\n", maior(valores, n));
+                    printf("Menor: %.2f\n", menor(valores, n));
+                }
+                break;
+
+            case 4:
+                salvar_arquivo(valores, n);
+                break;
+
+            case 5:
+                n = carregar_arquivo(valores);
+                break;
+
+            case 0:
+                printf("Saindo...\n");
+                break;
+
+            default:
+                printf("Opcao invalida!\n");
+        }
+
+    } while(op != 0);
+
+    return 0;
+}
