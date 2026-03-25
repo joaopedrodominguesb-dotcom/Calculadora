@@ -1,0 +1,28 @@
+#include <stdio.h>
+
+int main() {
+    float tensao;
+
+    printf("Digite a tensao da celula Li-Po (em V): ");
+
+    if (scanf("%f", &tensao) != 1) {
+        printf("ERRO: Entrada invalida!\n");
+        return 1;
+    }
+
+    // Verificacoes usando operadores relacionais
+    if (tensao < 3.0) {
+        printf("PERIGO: Tensao critica! Risco de dano a bateria!\n");
+    }
+    else if (tensao >= 3.0 && tensao < 3.5) {
+        printf("ALERTA: Nivel baixo. Considere recarregar.\n");
+    }
+    else if (tensao >= 3.5 && tensao <= 4.2) {
+        printf("OK: Tensao dentro do normal.\n");
+    }
+    else if (tensao > 4.2) {
+        printf("PERIGO: Sobretensao! Risco serio!\n");
+    }
+
+    return 0;
+}
