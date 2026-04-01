@@ -1,0 +1,26 @@
+#include <stdio.h>
+
+int main() {
+    int modo, aquecedor;
+
+    printf("Escolha o modo (1-Rapido, 2-Pesado): ");
+    scanf("%d", &modo);
+
+    printf("Ativar aquecedor? (1-Sim, 0-Nao): ");
+    scanf("%d", &aquecedor);
+
+    switch(modo) {
+        case 1:
+        case 2:
+            if (modo == 2 && aquecedor == 1) {
+                printf("Lavagem Pesada Quente\n");
+            } else {
+                printf("Lavagem Padrao\n");
+            }
+            break;
+        default:
+            printf("Opcao invalida\n");
+    }
+
+    return 0;
+}
