@@ -1,0 +1,23 @@
+#include <stdio.h>
+
+int main() {
+    int eixo, pos;
+
+    printf("Escolhe o eixo (1-X, 2-Y): ");
+    scanf("%d", &eixo);
+
+    printf("Digite a posicao (0 a 100mm): ");
+    scanf("%d", &pos);
+
+    if (eixo != 1 && eixo != 2) {
+        printf("Eixo invalido\n");
+    } 
+    else if (pos < 0 || pos > 100) {
+        printf("Bloqueado pelo limite\n");
+    } 
+    else {
+        printf("Movendo seguro\n");
+    }
+
+    return 0;
+}
